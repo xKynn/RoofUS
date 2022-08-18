@@ -1,4 +1,4 @@
-<img src="https://therealdeal.com/2022/07/06/the-stats-dont-lie-nycs-housing-market-is-cooling/" width="300" height="300" />
+
 
 # RoofUS
 
