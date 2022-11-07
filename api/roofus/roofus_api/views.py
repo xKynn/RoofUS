@@ -11,12 +11,15 @@ from rest_framework.response import Response
 
 class PredictionAPIView(APIView):
     def post(self, request, *args, **kwargs):
+        print(request.data)
         zipc  = request.data.get('zipcode')
         beds  = request.data.get('beds')
         baths = request.data.get('baths')
         sqft  = request.data.get('sqft')
+        ybuilt  = request.data.get('ybuilt')
+        lsize  = request.data.get('lsize')
 
-        pred = get_prediction(zipc, beds, baths, sqft)
+        pred = get_prediction(zipc, beds, baths, sqft, ybuilt, lsize)
         if pred['result']:
             return Response(pred['data'], status=status.HTTP_202_ACCEPTED)
         else:
