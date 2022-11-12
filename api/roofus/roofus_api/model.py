@@ -50,6 +50,7 @@ ConvertToNAString(training, nan_features)
 
 non_categorical_columns = [col for col in training.columns if col not in category_features and col not in ['ID']]
 numeric_features = training[non_categorical_columns].dtypes[training.dtypes != "object"].index
+numeric_features = numeric_features.drop(['LATITUDE', 'LONGITUDE'])
 
 training[numeric_features] = np.log1p(training[numeric_features])
 
@@ -100,6 +101,8 @@ def get_prediction(zipc, beds, baths, sqft, ybuilt, lsize):
     return {
         'result': True,
         'data': {
-        'price': prediction
+        'price': prediction,
+        'lat': res['latitude'],
+        'long': res['longitude']
         }
     }
