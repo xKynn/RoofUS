@@ -89,20 +89,33 @@ class HousingBarChart(BaseChart):
     type = ChartType.Bar
 
     class data:
-        label = "House Prices in Your Zip Code"
+        label = "House Prices in your Zip Code"
         data = []
         backgroundColor = Color.Blue
+
+class HousingLineChart(BaseChart):
+    type = ChartType.Line
+
+    class data:
+        label = "Price Prediction Every 2 Years"
+        data = []
+        backgroundColor = Color.RGBA(255, 135, 159)
 
 
 def get_prediction(zipc, beds, baths, sqft, ybuilt, lsize):
     chart = HousingBarChart()
     ret = list(np.round(np.expm1(training[training['ZIP OR POSTAL CODE'] == np.log1p(float(zipc))]['PRICE'])))
+    if not ret:
+        ret = list(np.round(np.expm1(training[ (training['ZIP OR POSTAL CODE'] >= np.log1p(float(zipc)-10.0)) & (training['ZIP OR POSTAL CODE'] <= np.log1p(float(zipc)+10.0))]['PRICE'])))
+        chart.data.label = "House Prices Around your Zip Code"
     chart.data.data = ret
     charthtml = chart.get()
     res = nomi.query_postal_code(int(zipc))
     if not lsize:
         lsize = float(sqft) + float(sqft)*3
-    df = pd.DataFrame({'SOLD DATE': [pd.to_datetime(datetime.datetime.now()).value,],
+    dtn = datetime.datetime.now()
+    pred_years = []
+    df = pd.DataFrame({'SOLD DATE': [pd.to_datetime(dtn).value,],
         'ZIP OR POSTAL CODE': float(zipc),
         'BEDS': float(beds),
         'BATHS': float(baths),
@@ -114,13 +127,40 @@ def get_prediction(zipc, beds, baths, sqft, ybuilt, lsize):
     pred_X = test_X[0:0]
     pred_X = pd.concat([pred_X, np.log1p(df[df.columns])]).fillna(0)
     prediction = np.expm1(m.predict(pred_X)[0])
+    pred_years.append(float(prediction))
+    inc_factor = 0.05*prediction
+
+    for x in range(4):
+        try:
+            dtn = dtn.replace(year=dtn.year + 2)
+        except ValueError:
+            dtn = dtn.replace(year=dtn.year + 2, day=28)
+        df = pd.DataFrame({'SOLD DATE': [pd.to_datetime(dtn).value,],
+            'ZIP OR POSTAL CODE': float(zipc),
+            'BEDS': float(beds),
+            'BATHS': float(baths),
+            'SQUARE FEET': float(sqft),
+            'LATITUDE': res['latitude'],
+            'LONGITUDE': res['longitude'],
+            'YEAR BUILT': float(ybuilt),
+            'LOT SIZE': float(lsize)})
+        pred_X = test_X[0:0]
+        pred_X = pd.concat([pred_X, np.log1p(df[df.columns])]).fillna(0)
+        prediction = np.expm1(m.predict(pred_X)[0])
+        pred_years.append(float(prediction+(inc_factor*(x+1))))
+
+    print(pred_years)
+    chart2 = HousingLineChart()
+    chart2.data.data = pred_years
+    chart2html = chart2.get()
+
     return {
         'result': True,
         'data': {
         'price': prediction,
         'lat': res['latitude'],
         'long': res['longitude'],
-        'charts': [charthtml]
+        'charts': [charthtml, chart2html]
         }
     }
 
