@@ -96,7 +96,7 @@ class HousingBarChart(BaseChart):
 
 def get_prediction(zipc, beds, baths, sqft, ybuilt, lsize):
     chart = HousingBarChart()
-    ret = list(np.round(np.expm1(training[training['ZIP OR POSTAL CODE'] == np.log1p(zipc)]['PRICE'])))
+    ret = list(np.round(np.expm1(training[training['ZIP OR POSTAL CODE'] == np.log1p(float(zipc))]['PRICE'])))
     chart.data.data = ret
     charthtml = chart.get()
     res = nomi.query_postal_code(int(zipc))
