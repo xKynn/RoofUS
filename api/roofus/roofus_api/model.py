@@ -17,6 +17,9 @@ import matplotlib.pyplot as plt
 from scipy.stats import skew
 from collections import OrderedDict
 import pgeocode
+
+from pychartjs import BaseChart, ChartType, Color
+
 nomi = pgeocode.Nominatim('us')
 
 dataFrame = pd.read_csv("roofus_api/CombinedData.csv", header = 0, low_memory=False)
@@ -82,7 +85,20 @@ m = xgboost.XGBRegressor()
 
 m.load_model("roofus_api/CurrentModel.json")
 
+class HousingBarChart(BaseChart):
+    type = ChartType.Bar
+
+    class data:
+        label = "House Prices in Your Zip Code"
+        data = []
+        backgroundColor = Color.Blue
+
+
 def get_prediction(zipc, beds, baths, sqft, ybuilt, lsize):
+    chart = HousingBarChart()
+    ret = list(np.round(np.expm1(training[training['ZIP OR POSTAL CODE'] == np.log1p(27401)]['PRICE'])))
+    chart.data.data = ret
+    charthtml = chart.get()
     res = nomi.query_postal_code(int(zipc))
     if not lsize:
         lsize = float(sqft) + float(sqft)*3
@@ -103,6 +119,8 @@ def get_prediction(zipc, beds, baths, sqft, ybuilt, lsize):
         'data': {
         'price': prediction,
         'lat': res['latitude'],
-        'long': res['longitude']
+        'long': res['longitude'],
+        'charts': [charthtml]
         }
     }
+
