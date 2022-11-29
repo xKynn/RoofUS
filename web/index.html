@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>RoofUS</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/gh/cferdinandi/smooth-scroll/dist/smooth-scroll.polyfills.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.2/dist/leaflet.css"
+     integrity="sha256-sA+zWATbFveLLNqWO2gtiw3HL/lh1giY/Inf1BJ0z14="
+     crossorigin=""/>
+     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx" crossorigin="anonymous">
+    <script src="https://unpkg.com/leaflet@1.9.2/dist/leaflet.js"
+     integrity="sha256-o9N1jGDZrf5tS+Ft4gbIK7mYMipq9lqpVJ91xHSyKhg="
+     crossorigin=""></script>
+</head>
+
+<body>
+    <nav class="navbar navbar-light bg-light">
+        <a class="navbar-brand" href="#">
+            <img src="images/ROOFUS-logos_transparentWithRoof.png"
+                 height="170"
+                 alt="RoofUS Logo"
+                 loading="lazy" />
+        </a>
+</nav>
+    <section id="start">
+        <div class="header">
+<!--                 <body>
+                    <div class="container2">
+                        <div class="images">
+                            <img src="images/ROOFUS-logos_transparentWithRoof.png" width="60%">
+                        </div>
+                        <div class="text">
+                            <p>Welcome to roof us!. We are the best at giving you a well rounded predictive price. We hope our model can assist you in your real estate prediction needs.</p>
+                        </div>
+                    </div>
+                </body> -->
+
+                <!--Nav Bar-->
+                <nav id="sideNav">
+                    <ul>
+                        <li><a href="#start">HOME</a></li>
+                        <li><a href="#features">FEATURES</a></li>
+                        <li><a href="#entry">ENTRY</a></li>
+                        <li><a href="#about">ABOUT US</a></li>
+
+                    </ul>
+                </nav>
+                <img src="images/menu.png" id="menuBtn">
+
+                <!--Features-->
+
+                <section id="features">
+                    <div class="feature-row">
+                        <div class="feature-col">
+                            <img src="images/pic-1.png">
+                            <h4>Use Anywhere</h4>
+                            <p>$30,000 average prediction error without using extremely specific data for your property.</p>
+                        </div>
+                        <div class="feature-col">
+                            <img src="images/pic-2.png">
+                            <h4>Trusted Data</h4>
+                            <p>Data retreived and engineered from verified websites such as Redfin.</p>
+
+                        </div>
+                        <div class="feature-col">
+                            <img src="images/pic-3.png">
+                            <h4>Unlimited Learning</h4>
+                            <p>Our model utilizes XGBoost to learn and predict house prices in North Carolina.</p>
+
+                        </div>
+
+                    </div>
+                    <div class="feature-btn" id="againbtn" style="visibility: hidden; height: 0px;">
+                        <div class="line">
+                            <span class="line-1"></span><br>
+                            <span class="line-2"></span><br>
+                            <span class="line-3"></span>
+                        </div>
+                        <button class="common-btn" onClick="history.go(0);">Modify Search Parameters</button>
+                    </div>
+                </section>
+
+                <!--Entry-->
+                <section id="entry" class="section">
+                    <div class="container contact-row">
+                        <div class="contact-left-col">
+                            <h1>Enter Property Information </h1>
+                            <br>
+                        <form id ="qform" action="">
+                            <input id="zipcode" type="number" placeholder="Zip Code" required>
+                            <input id="beds" type="number" min="1" max="10" placeholder="Beds" required>
+                            <input id="baths" type="number" min="1" max="10" placeholder="Baths" required>
+                            <input id="sqft" type="number" placeholder="Area in Square Feet" required>
+                            <input id="lotsize" type="number" placeholder="Lot Size" required>
+                            <input id="ybuilt" type="number" placeholder="Year Built" required>
+                            <div class="btn-box">
+                                <button class="common-btn" type="button" onclick="userAction()">Search</button>
+
+                            </div>
+                        </form>
+
+
+                        </div>
+
+                    <div class="contact-right-col">
+                        <img src="images/home.jpg">
+
+
+                    </div>
+                </section>
+                <br>
+                <section id="yourprop" style="visibility: hidden; height: 0px;">
+                    <div class="container contact-row">
+                        <div class="contact-right-col" >
+                            <h1>Prediction Metrics</h1>
+                            <br>
+                        </div>
+                        <br>
+                    </div>
+                </section>
+                <div class="container text-center" id="charts" style="visibility: hidden; height:0px">
+                <div class="row row-cols-2" >
+
+                    <!--first chart-->
+                    <div class="col">
+                        <canvas id="myChart" style="width:100%;max-width:700px"></canvas>
+                    </div>
+
+                    <div class="col">
+                        <canvas id="myChart2" style="width:100%;max-width:700px"></canvas>
+                    </div>
+                </div>
+                <div class="row row-cols" id="predh" style="visibility: hidden; height:0px">
+                    <!--first chart-->
+                    <div class="container col">
+                        <h3 id="pred" class="border border-success bg-light p-3 rounded" style="color:#595959;"></h3>
+                    </div>
+                </div>
+                </div>
+                <br>
+                <section  id="mapheader" style="visibility: hidden; height: 0px">
+                    <div class="container contact-row">
+                        <div class="contact-right-col">
+                            <h1>Property Location</h1>
+                            <br>
+                        </div>
+                        <br>
+                    </div>
+                </section>
+
+                <div id="map" style="height: 0px;"></div>
+
+                <section id="about">
+                    <div class="container contact-row">
+                        <div class="contact-left-col">
+                            <img src="images/about.png">
+                        </div>
+                        <div class="contact-right-col">
+                            <div class="about-text">
+                                <h1>About Us</h1>
+                                <span class="square"></span>
+                                <p>
+                                    Our purpose: To better assist consumers specifically in North Carolina. Our goal: To predict prices in a home market using machine learning techniques. Our plan: To develop a ML model and website. The model is created in Python. The frontend
+                                    utilizes javascript/bootstrap. The code for our project is freely available on GitHub.
+                                </p>
+                                <div class="line">
+                                    <span class="line-1"></span><br>
+                                    <span class="line-2"></span><br>
+                                    <span class="line-3"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+
+
+
+                <!--Footer-->
+                <section id="footer">
+                    <div class="container footer-row">
+                        <hr>
+                        <div class="footer-left-col">
+                            <div class="footer-links">
+                                <div class="link-title">
+                                    <h4>Product</h4>
+                                    <small>Our Plan</small><br>
+
+                                </div>
+                                <div class="link-title">
+                                    <h4>About</h4>
+                                    <small>Request Demo</small><br>
+                                    <small>FAQS</small>
+                                </div>
+                                <div class="link-title">
+                                    <h4>Support</h4>
+                                    <small>Features</small><br>
+                                    <small>Contact Us</small>
+                                </div>
+                                <div class="link-title">
+                                    <h4>Explore</h4>
+                                    <small>Find a nonprofit</small><br>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="footer-right-col">
+                            <div class="footer-info">
+                                <div class="copyright-text">
+
+                                </div>
+                                <div class="footer-logo">
+                                    <img src="images/logo_transparent.png.png">
+                                    <button class="common-btn">English</button>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </section>
+
+
+                <!--Menu-->
+
+                <script>
+                    var menuBtn = document.getElementById("menuBtn");
+                    var sideNav = document.getElementById("sideNav");
+
+                    sideNav.style.right = "-250px";
+                    menuBtn.onclick = function() {
+                        if (sideNav.style.right == "-250px") {
+                            sideNav.style.right = "0";
+                        } else {
+                            sideNav.style.right = " -250px";
+                        }
+                    }
+
+
+                    var scroll = new SmoothScroll('a[href*="#"]', {
+                        speed: 1000,
+                        speedAsDuration: true
+                    });
+                </script>
+
+                <script src="app.js"></script>
+                <noscript>You need to enable JavaScript to view the full site.</noscript>
+
+</body>
+
+</html>
